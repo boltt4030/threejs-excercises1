@@ -1,0 +1,22 @@
+{
+    "name": "001.project",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "gsap": "^3.12.7",
+      "three": "^0.173.0",
+      "vite": "^6.2.0"
+    },
+    "devDependencies": {
+      "vite-plugin-restart": "^0.4.2"
+    }
+  }
+  
