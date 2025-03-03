@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// import Cube from './assets/objects/Cube';
+import Plane from './assets/objects/Plane';
 // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js'
 /* //for animate with gsap
@@ -7,6 +9,35 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 */
 
+import gsap from 'gsap'
+import { GUI } from 'lil-gui'
+
+/* Texture Loader */
+const image = new Image()
+image.onload = () => {
+    console.log('image loaded')
+}
+image.src = 'textures/door/door-color.jpg'
+
+/*
+* DEBUG
+*/
+const gui = new GUI({
+    width: 400,
+    title: 'Debug UI',
+    closeFolders: false
+})
+// gui.close()
+// gui.hide()
+
+window.addEventListener('keydown', (event) => {
+    if(event.key == 'h'){
+        gui.show(gui._hidden)
+    }
+
+})
+
+const debugObject = {}
 /* 
 //for mouse cursor
 */
@@ -26,13 +57,85 @@ const scene = new THREE.Scene()
 
 // Axes Helper
 const axesHelper = new THREE.AxesHelper(3)
-scene.add(axesHelper)
+// scene.add(axesHelper)
+
 /* Objects */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: '#ff0000', wireframe: false })
-)
-scene.add(cube)
+// const cube = new THREE.Mesh(
+//     new THREE.BoxGeometry(1, 1, 1, 2, 2, 2),
+//     new THREE.MeshBasicMaterial({
+//         color: '#ff0000',
+//         wireframe: true 
+//     })
+// )
+// scene.add(cube)
+
+debugObject.color = '#9abbfe'
+const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2)
+
+// const geometry = new THREE.BufferGeometry()
+
+const count = 50
+const positionsArray = new Float32Array(count * 3 * 3)
+for (let i = 0; i < count * 3 * 3; i++) {
+    positionsArray[i] = (Math.random() -0.5) * 4
+}
+
+const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3)
+// geometry.setAttribute('position', positionsAttribute)
+const material = new THREE.MeshBasicMaterial({
+    color: debugObject.color,
+    wireframe: true
+})
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
+
+const cubeTweaks = gui.addFolder('Awesome Cubes')
+
+cubeTweaks
+    .add(mesh.position, 'y')
+    .min(-3)
+    .max(3)
+    .step(0.01)
+    .name('Elevation')
+
+cubeTweaks
+    .add(mesh, 'visible')
+
+cubeTweaks
+    .add(material, 'wireframe')
+
+cubeTweaks
+    .addColor(debugObject, 'color')
+    .onChange((value) => {
+        material.color.set(debugObject.color)
+    })
+
+debugObject.spin = () => {
+    gsap.to(mesh.rotation, { duration: 1, y: mesh.rotation.y + Math.PI * 2 })
+}
+cubeTweaks
+    .add(debugObject, 'spin')
+
+debugObject.subdivision = 2
+
+cubeTweaks
+    .add(debugObject, 'subdivision')
+    .min(1)
+    .max(20)
+    .step(1)
+    .onFinishChange((value) => {
+        mesh.geometry.dispose()
+        mesh.geometry = new THREE.BoxGeometry(
+            1, 1, 1,
+            debugObject.subdivision, debugObject.subdivision, debugObject.subdivision
+        )
+    })
+
+/* Plane */
+const plane =  new Plane()
+plane.rotation.set(Math.PI * 0.5, 0, 0)
+plane.position.set(0, -0.51, 0)
+// scene.add(plane)
 
 /** Group Object */
 /*
@@ -84,32 +187,32 @@ window.addEventListener('resize', () =>
 })
 
 // Fullscreen
-window.addEventListener('dblclick', () =>
-{
-    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
-    if (!fullscreenElement)
-    {
-        if (canvas.requestFullscreen)
-        {
-            canvas.requestFullscreen()
-        }
-        else if (canvas.webkitRequestFullscreen)
-        {
-            canvas.webkitRequestFullscreen()
-        }
-    }
-    else
-    {
-        if (document.exitFullscreen)
-        {
-            document.exitFullscreen()
-        }
-        else if (document.webkitExitFullscreen)
-        {
-            document.webkitExitFullscreen()
-        }
-    }
-})
+// window.addEventListener('dblclick', () =>
+// {
+//     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
+//     if (!fullscreenElement)
+//     {
+//         if (canvas.requestFullscreen)
+//         {
+//             canvas.requestFullscreen()
+//         }
+//         else if (canvas.webkitRequestFullscreen)
+//         {
+//             canvas.webkitRequestFullscreen()
+//         }
+//     }
+//     else
+//     {
+//         if (document.exitFullscreen)
+//         {
+//             document.exitFullscreen()
+//         }
+//         else if (document.webkitExitFullscreen)
+//         {
+//             document.webkitExitFullscreen()
+//         }
+//     }
+// })
 
 // Camera
 // Parameteres Perspective(FOV, aspect, near, far)
