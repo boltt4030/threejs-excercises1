@@ -11,6 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import gsap from 'gsap'
 import { GUI } from 'lil-gui'
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
 
 /* Textures */
 const loadingManager = new THREE.LoadingManager()
@@ -60,6 +61,24 @@ colorTexture.generateMipmaps = false
 colorTexture.minFilter = THREE.NearestFilter
 colorTexture.magFilter = THREE.NearestFilter
 
+const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
+doorColorTexture.colorSpace = THREE.SRGBColorSpace
+const doorAlphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+doorAlphaTexture.colorSpace = THREE.SRGBColorSpace
+const doorAmbientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+doorAmbientOcclusionTexture.colorSpace = THREE.SRGBColorSpace
+const doorHeightTexture = textureLoader.load('/textures/door/height.jpg')
+doorHeightTexture.colorSpace = THREE.SRGBColorSpace
+const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg')
+doorNormalTexture.colorSpace = THREE.SRGBColorSpace
+const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+doorMetalnessTexture.colorSpace = THREE.SRGBColorSpace
+const doorRoughnessTexture = textureLoader.load('/textures/door/roughnesss.jpg')
+doorRoughnessTexture.colorSpace = THREE.SRGBColorSpace
+const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+matcapTexture.colorSpace = THREE.SRGBColorSpace
+const gradientTexture = textureLoader.load('/textures/gradients/5.jpg')
+gradientTexture.colorSpace = THREE.SRGBColorSpace
 
 /*
 * DEBUG UI
@@ -112,9 +131,173 @@ const axesHelper = new THREE.AxesHelper(3)
 // scene.add(cube)
 
 debugObject.color = '#9abbfe'
-const geometry = new THREE.BoxGeometry(1, 1, 1)
+// const geometry = new THREE.BoxGeometry(1, 1, 1)
 
-// const geometry = new THREE.BufferGeometry()
+// MeshBasicMaterial
+// const material = new THREE.MeshBasicMaterial()
+// material.map = doorColorTexture
+// material.color = new THREE.Color('#ff9000')
+// material.wireframe = true
+// material.transparent = true
+// material.opacity = 0.5
+// material.alphaMap = doorAlphaTexture
+// material.side = THREE.DoubleSide
+
+// // MeshNormalMaterial
+// const material = new THREE.MeshNormalMaterial()
+// material.flatShading = true
+
+// // MeshMatcapMaterial
+// const material = new THREE.MeshMatcapMaterial()
+// material.matcap = matcapTexture
+
+// // MeshDepthMaterial
+// const material = new THREE.MeshDepthMaterial()
+
+// // MeshLambertMaterial
+// const material = new THREE.MeshLambertMaterial()
+
+// // MeshPhongMaterial
+// const material = new THREE.MeshPhongMaterial()
+// material.shininess = 100
+// material.specular = new THREE.Color('#1188ff')
+
+// MeshToonMaterial
+// const material = new THREE.MeshToonMaterial()
+// gradientTexture.minFilter = THREE.NearestFilter
+// gradientTexture.magFilter = THREE.NearestFilter
+// gradientTexture.generateMipmaps = false
+// material.gradientMap = gradientTexture
+
+// MeshStandardMaterial
+/*
+const material = new THREE.MeshStandardMaterial()
+material.metalness = 1
+material.roughness = 1
+material.map = doorColorTexture
+material.aoMap = doorAmbientOcclusionTexture
+material.aoMapIntensity = 1
+material.displacementMap = doorHeightTexture
+material.displacementScale = 0.05
+material.metalnessMap = doorMetalnessTexture
+material.roughnessMap = doorRoughnessTexture
+material.normalMap = doorNormalTexture
+material.normalScale.set(0.1, 0.5)
+material.transparent = true
+material.alphaMap = doorAlphaTexture
+
+
+gui.add(material, 'metalness').min(0).max(1).step(0.001)
+gui.add(material, 'roughness').min(0).max(1).step(0.001)
+*/
+
+// MeshPhysicalMaterial
+const material = new THREE.MeshPhysicalMaterial()
+material.metalness = 1
+material.roughness = 1
+// material.map = doorColorTexture
+// material.aoMap = doorAmbientOcclusionTexture
+// material.aoMapIntensity = 1
+// material.displacementMap = doorHeightTexture
+// material.displacementScale = 0.05
+// material.metalnessMap = doorMetalnessTexture
+// material.roughnessMap = doorRoughnessTexture
+// material.normalMap = doorNormalTexture
+// material.normalScale.set(0.1, 0.5)
+// material.transparent = true
+// material.alphaMap = doorAlphaTexture
+
+
+gui.add(material, 'metalness').min(0).max(1).step(0.001)
+gui.add(material, 'roughness').min(0).max(1).step(0.001)
+
+// Clearcoat
+/*
+material.clearcoat = 1
+material.clearcoatRoughness = 0
+
+gui.add(material, 'clearcoat').min(0).max(1).step(0.0001)
+gui.add(material, 'clearcoatRoughness').min(0).max(1).step(0.0001)
+*/
+
+// Sheen
+/*
+material.sheen = 1
+material.sheenRoughness = 0.25
+material.sheenColor.set(1, 1, 1)
+
+gui.add(material, 'sheen').min(0).max(1).step(0.0001)
+gui.add(material, 'sheenRoughness').min(0).max(1).step(0.0001)
+gui.addColor(material, 'sheenColor')
+*/
+// Iridescence
+/*
+material.iridescence = 1
+material.iridescenceIOR = 1
+material.iridescenceThicknessRange = [100, 800]
+
+gui.add(material, 'iridescence').min(0).max(1).step(0.0001)
+gui.add(material, 'iridescenceIOR').min(1).max(2.333).step(0.0001)
+gui.add(material.iridescenceThicknessRange, '0').min(1).max(1000).step(1)
+gui.add(material.iridescenceThicknessRange, '1').min(1).max(1000).step(1)
+*/
+
+// Transmission
+material.transmission = 1
+material.ior = 1.5
+material.thickness = 1
+
+gui.add(material, 'transmission').min(0).max(1).step(0.0001)
+gui.add(material, 'ior').min(1).max(10).step(0.0001)
+gui.add(material, 'thickness').min(0).max(1).step(0.0001)
+
+
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 64, 64),
+    material
+)
+sphere.position.x = -1.5
+
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1, 100, 100),
+    material
+)
+
+const torus = new THREE.Mesh(
+    new THREE.TorusGeometry(0.3, 0.2, 64, 128),
+    material
+)
+torus.position.x = 1.5
+
+scene.add(sphere, plane, torus)
+
+/** 
+ * Lights 
+*/
+// const ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
+// scene.add(ambientLight)
+
+// const pointLight = new THREE.PointLight('#ffffff', 30)
+// pointLight.position.set(2, 3, 4)
+// scene.add(pointLight)
+
+/**
+ * Environment Map
+*/
+const rgbeLoader = new RGBELoader()
+rgbeLoader.load('/textures/environmentMap/lilienstein_4k.hdr', (environmentMap) => {
+    environmentMap.mapping = THREE.EquirectangularReflectionMapping
+
+    scene.background = environmentMap
+    scene.environment = environmentMap
+    // texture.mapping = THREE.EquirectangularReflectionMapping
+
+    // scene.background = texture
+    // scene.environment = texture
+
+    // scene.environment.mapping = THREE.EquirectangularReflectionMapping
+
+})
 
 const count = 50
 const positionsArray = new Float32Array(count * 3 * 3)
@@ -124,14 +307,16 @@ for (let i = 0; i < count * 3 * 3; i++) {
 
 const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3)
 // geometry.setAttribute('position', positionsAttribute)
-const material = new THREE.MeshBasicMaterial({
-    // color: debugObject.color,
-    map: colorTexture,
-    wireframe: false
-})
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+// const material = new THREE.MeshBasicMaterial({
+//     // color: debugObject.color,
+//     map: colorTexture,
+//     wireframe: false
+// })
+// const mesh = new THREE.Mesh(geometry, material)
+// scene.add(mesh)
 
+/* Tweaks Debug UI */
+/*
 const cubeTweaks = gui.addFolder('Awesome Cubes')
 
 cubeTweaks
@@ -173,11 +358,12 @@ cubeTweaks
             debugObject.subdivision, debugObject.subdivision, debugObject.subdivision
         )
     })
+*/
 
 /* Plane */
-const plane =  new Plane()
-plane.rotation.set(Math.PI * 0.5, 0, 0)
-plane.position.set(0, -0.51, 0)
+// const plane =  new Plane()
+// plane.rotation.set(Math.PI * 0.5, 0, 0)
+// plane.position.set(0, -0.51, 0)
 // scene.add(plane)
 
 /** Group Object */
@@ -310,7 +496,7 @@ gsap.to(group.position, {
 // let time = Date.now()
 
 // Clock
-// const clock = new THREE.Clock()
+const clock = new THREE.Clock()
 
 
 /* Animation tick */
@@ -322,7 +508,7 @@ const tick = () =>
     time = currentTime */
 
     // Using Clock
-    // const elapsedTime = clock.getElapsedTime()
+    const elapsedTime = clock.getElapsedTime()
     // const deltaTime = clock.getDelta()
     
     // Update objects
@@ -336,6 +522,14 @@ const tick = () =>
     // camera.lookAt(cube.position)
     // camera.position.x = Math.cos(elapsedTime)
 
+    sphere.rotation.y = 0.1 * elapsedTime
+    // plane.rotation.y = 0.1 * elapsedTime
+    torus.rotation.y = 0.1 * elapsedTime
+    
+    sphere.rotation.x = - 0.15 * elapsedTime
+    // plane.rotation.x = - 0.15 * elapsedTime
+    torus.rotation.x = - 0.15 * elapsedTime
+    
     // Update controls
     controls.update()
 
