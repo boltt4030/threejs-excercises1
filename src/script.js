@@ -12,20 +12,62 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gsap from 'gsap'
 import { GUI } from 'lil-gui'
 
-/* Texture Loader */
-const image = new Image()
-image.onload = () => {
-    console.log('image loaded')
+/* Textures */
+const loadingManager = new THREE.LoadingManager()
+/*
+loadingManager.onStart = () => {
+    console.log('started')
 }
-image.src = 'textures/door/door-color.jpg'
+loadingManager.onLoad = () => {
+    console.log('finished')
+}
+loadingManager.onProgress = () => {
+    console.log('loading progress')
+}
+loadingManager.onError = () => {
+    console.log('loading error')
+}
+*/
+const textureLoader = new THREE.TextureLoader(loadingManager)
+const colorTexture = textureLoader.load('/textures/minecraft.png')
+colorTexture.colorSpace = THREE.SRGBColorSpace
+const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+alphaTexture.colorSpace = THREE.SRGBColorSpace
+const heightTexture = textureLoader.load('/textures/door/height.jpg')
+heightTexture.colorSpace = THREE.SRGBColorSpace
+const normalTexture = textureLoader.load('/textures/door/normal.jpg')
+normalTexture.colorSpace = THREE.SRGBColorSpace
+const ambientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+ambientOcclusionTexture.colorSpace = THREE.SRGBColorSpace
+const metalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+metalnessTexture.colorSpace = THREE.SRGBColorSpace
+const roughnessTexture = textureLoader.load('/textures/door/roughnesss.jpg')
+roughnessTexture.colorSpace = THREE.SRGBColorSpace
+
+// colorTexture.repeat.x = 2
+// colorTexture.repeat.y = 3
+// colorTexture.wrapS = THREE.MirroredRepeatWrapping
+// colorTexture.wrapT = THREE.MirroredRepeatWrapping
+
+// colorTexture.offset.x = 0.5
+// colorTexture.offset.y = 0.5
+
+// colorTexture.rotation = Math.PI / 4
+// colorTexture.center.x = 0.5
+// colorTexture.center.y = 0.5
+
+colorTexture.generateMipmaps = false
+colorTexture.minFilter = THREE.NearestFilter
+colorTexture.magFilter = THREE.NearestFilter
+
 
 /*
-* DEBUG
+* DEBUG UI
 */
 const gui = new GUI({
     width: 400,
     title: 'Debug UI',
-    closeFolders: false
+    closeFolders: true
 })
 // gui.close()
 // gui.hide()
@@ -70,7 +112,7 @@ const axesHelper = new THREE.AxesHelper(3)
 // scene.add(cube)
 
 debugObject.color = '#9abbfe'
-const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2)
+const geometry = new THREE.BoxGeometry(1, 1, 1)
 
 // const geometry = new THREE.BufferGeometry()
 
@@ -83,8 +125,9 @@ for (let i = 0; i < count * 3 * 3; i++) {
 const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3)
 // geometry.setAttribute('position', positionsAttribute)
 const material = new THREE.MeshBasicMaterial({
-    color: debugObject.color,
-    wireframe: true
+    // color: debugObject.color,
+    map: colorTexture,
+    wireframe: false
 })
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
@@ -116,7 +159,7 @@ debugObject.spin = () => {
 cubeTweaks
     .add(debugObject, 'spin')
 
-debugObject.subdivision = 2
+debugObject.subdivision = 1
 
 cubeTweaks
     .add(debugObject, 'subdivision')
@@ -186,33 +229,35 @@ window.addEventListener('resize', () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-// Fullscreen
-// window.addEventListener('dblclick', () =>
-// {
-//     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
-//     if (!fullscreenElement)
-//     {
-//         if (canvas.requestFullscreen)
-//         {
-//             canvas.requestFullscreen()
-//         }
-//         else if (canvas.webkitRequestFullscreen)
-//         {
-//             canvas.webkitRequestFullscreen()
-//         }
-//     }
-//     else
-//     {
-//         if (document.exitFullscreen)
-//         {
-//             document.exitFullscreen()
-//         }
-//         else if (document.webkitExitFullscreen)
-//         {
-//             document.webkitExitFullscreen()
-//         }
-//     }
-// })
+/* Fullscreen */
+/*
+window.addEventListener('dblclick', () =>
+{
+    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
+    if (!fullscreenElement)
+    {
+        if (canvas.requestFullscreen)
+        {
+            canvas.requestFullscreen()
+        }
+        else if (canvas.webkitRequestFullscreen)
+        {
+            canvas.webkitRequestFullscreen()
+        }
+    }
+    else
+    {
+        if (document.exitFullscreen)
+        {
+            document.exitFullscreen()
+        }
+        else if (document.webkitExitFullscreen)
+        {
+            document.webkitExitFullscreen()
+        }
+    }
+})
+*/
 
 // Camera
 // Parameteres Perspective(FOV, aspect, near, far)
